@@ -35,6 +35,7 @@ namespace MobaClient
             {
                 stream = tcpClient.GetStream();
                 buffer = new byte[tcpClient.ReceiveBufferSize];
+                Debug.Log("connect success! ");
                 stream.BeginRead(buffer, 0, buffer.Length, OnReceivedData, tcpClient);
             }
         }
