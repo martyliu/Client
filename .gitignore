@@ -1,0 +1,10 @@
+Client/.vs
+Client/Library/**
+Client/Library/**/*
+Client/Logs/**
+Client/Logs/**/*
+Client/obj/**
+Client/obj/**/*
+Client/Temp/**
+Client/Temp/**/*
+
