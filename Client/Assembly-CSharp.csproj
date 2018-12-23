@@ -60,7 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Core\CharacterController.cs" />
+    <Compile Include="Assets\Scripts\Core\CharacterMoveController.cs" />
     <Compile Include="Assets\Scripts\Core\GameApp.cs" />
     <Compile Include="Assets\Scripts\Core\Manager\InputManager.cs" />
     <Compile Include="Assets\Scripts\Core\Manager\ManagerBase.cs" />

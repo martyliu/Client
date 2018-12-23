@@ -27,11 +27,12 @@ namespace MobaClient
 
         public void StartGame()
         {
-            tcpClient = new TcpClient();
-            tcpClient.Connect("127.0.0.1", 6666);
 
             foreach (var m in _managerList)
                 m.OnStart();
+            tcpClient = new TcpClient();
+            tcpClient.Connect("127.0.0.1", 6666);
+
 
             if (tcpClient.Connected)
             {

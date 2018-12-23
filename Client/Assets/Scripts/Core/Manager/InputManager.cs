@@ -28,24 +28,42 @@ namespace MobaClient
 
         public void OnUpdate(float deltaTime)
         {
-            var hori = Input.GetAxisRaw("Horizontal");
-            var vert = Input.GetAxisRaw("Vertical");
+            var hori = 0.0f;
+            if(Input.GetKey(KeyCode.D))
+            {
+                hori += 1;
+            }else if(Input.GetKey(KeyCode.A))
+            {
+                hori += -1;
+            }
 
-            if (vert == 0 && hori == 0)
-                return;
 
-            var x = hori;
-            var y = vert;
+            var vert = 0.0f;
+            if(Input.GetKey(KeyCode.W))
+            {
+                vert += 1;
+            }else if(Input.GetKey(KeyCode.S))
+            {
+                vert += -1;
+            }
 
-            _inputData.x += x;
-            _inputData.y += y;
+            //if (hori == 0 && vert == 0)
+                //return;
+            if (hori != _inputData.x || vert != _inputData.y)
+            {
+                _inputData.x = hori;
+                _inputData.y = vert;
+            }
         }
 
-        public void GetAndClearInputData(out float x, out float y)
+        public void GetInputData(out float x, out float y)
         {
             x = _inputData.x;
             y = _inputData.y;
+        }
 
+        public void ClearInputDate()
+        {
             _inputData.Clear();
         }
     }
