@@ -7,24 +7,15 @@ using UnityEngine;
 
 namespace MobaClient
 {
-    public class GameApp 
+    public class GameApp : Singleton<GameApp>
     {
-        #region Singleton
-        private static GameApp _instance = null;
-        public static GameApp Instance {
-            get
-            {
-                if (_instance == null)
-                    _instance = new GameApp();
-                return _instance;
-            }
-        }
-
-        #endregion Singleton
 
         byte[] buffer ;
         NetworkStream stream;
         TcpClient tcpClient;
+
+        public static bool Quiting { get; private set; } = false;
+
         public void StartGame()
         {
             tcpClient = new TcpClient();
@@ -37,7 +28,38 @@ namespace MobaClient
                 buffer = new byte[tcpClient.ReceiveBufferSize];
                 Debug.Log("connect success! ");
                 stream.BeginRead(buffer, 0, buffer.Length, OnReceivedData, tcpClient);
+
+
+                Vector2 input = new Vector2(0.5f, 0.1f);
+                Vector2List vectorLst = new Vector2List();
+                vectorLst.data.Add(input);
+                vectorLst.data.Add(input);
+
+                JsonWrapData data = new JsonWrapData() { protocolName = "moveInput" };
+                data.jsonData = JsonUtility.ToJson(vectorLst);
+                Debug.Log(data.jsonData);
+                SendData(JsonUtility.ToJson(data));
             }
+        }
+
+        public void OnUpdate(float deltaTime)
+        {
+
+        }
+
+        public void OnLateUpdate(float deltaTime)
+        {
+
+        }
+
+        public void OnFixedUpdate(float deltaTime)
+        {
+
+        }
+
+        public void OnAppQuit()
+        {
+            Quiting = true;
         }
 
         void OnReceivedData(IAsyncResult ar)
@@ -63,6 +85,12 @@ namespace MobaClient
 
         
     }
+
+    public class Vector2List
+    {
+        public List<Vector2> data = new List<Vector2>();
+    }
+
 
     public class JsonWrapData
     {

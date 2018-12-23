@@ -7,18 +7,30 @@ namespace MobaClient
 
     public class GameEntrance : MonoBehaviour
     {
-        GameApp game;
-        // Start is called before the first frame update
+        // Update is called once per frame
         void Start()
         {
-            game = new GameApp();
-            game.StartGame();
+            GameApp.Instance.StartGame();
         }
 
-        // Update is called once per frame
         void Update()
         {
+            GameApp.Instance.OnUpdate(Time.deltaTime);
+        }
 
+        private void OnApplicationQuit()
+        {
+            GameApp.Instance.OnAppQuit();
+        }
+
+        private void LateUpdate()
+        {
+            GameApp.Instance.OnLateUpdate(Time.deltaTime);
+        }
+
+        private void FixedUpdate()
+        {
+            GameApp.Instance.OnFixedUpdate(Time.fixedDeltaTime);
         }
     }
 }
