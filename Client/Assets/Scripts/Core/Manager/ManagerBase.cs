@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ManagerBase : MonoBehaviour
+namespace MobaClient
 {
-    // Start is called before the first frame update
-    void Start()
+    public interface IManagerBase 
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        void OnStart();
+        void OnUpdate(float deltaTime);
     }
 }

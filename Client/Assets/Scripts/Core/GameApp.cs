@@ -9,6 +9,9 @@ namespace MobaClient
 {
     public class GameApp : Singleton<GameApp>
     {
+        private List<IManagerBase> _managerList  = new List<IManagerBase>();
+
+        public InputManager InputManager { get; private set; }
 
         byte[] buffer ;
         NetworkStream stream;
@@ -16,13 +19,21 @@ namespace MobaClient
 
         public static bool Quiting { get; private set; } = false;
 
+        public void Init()
+        {
+            InputManager = new InputManager();
+            _managerList.Add(InputManager);
+        }
+
         public void StartGame()
         {
             tcpClient = new TcpClient();
             tcpClient.Connect("127.0.0.1", 6666);
 
-            
-            if(tcpClient.Connected)
+            foreach (var m in _managerList)
+                m.OnStart();
+
+            if (tcpClient.Connected)
             {
                 stream = tcpClient.GetStream();
                 buffer = new byte[tcpClient.ReceiveBufferSize];
@@ -40,11 +51,15 @@ namespace MobaClient
                 Debug.Log(data.jsonData);
                 SendData(JsonUtility.ToJson(data));
             }
+
+
+            
         }
 
         public void OnUpdate(float deltaTime)
         {
-
+            foreach (var m in _managerList)
+                m.OnUpdate(deltaTime);
         }
 
         public void OnLateUpdate(float deltaTime)

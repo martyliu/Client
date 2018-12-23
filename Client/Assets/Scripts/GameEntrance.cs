@@ -7,6 +7,13 @@ namespace MobaClient
 
     public class GameEntrance : MonoBehaviour
     {
+
+        private void Awake()
+        {
+
+            GameApp.Instance.Init();
+
+        }
         // Update is called once per frame
         void Start()
         {
