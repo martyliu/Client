@@ -47,13 +47,8 @@ namespace MobaClient
                 vert += -1;
             }
 
-            //if (hori == 0 && vert == 0)
-                //return;
-            if (hori != _inputData.x || vert != _inputData.y)
-            {
-                _inputData.x = hori;
-                _inputData.y = vert;
-            }
+            _inputData.x = hori;
+            _inputData.y = vert;
         }
 
         public void GetInputData(out float x, out float y)

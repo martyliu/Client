@@ -40,25 +40,26 @@ namespace MobaClient
                 buffer = new byte[tcpClient.ReceiveBufferSize];
                 Debug.Log("connect success! ");
                 stream.BeginRead(buffer, 0, buffer.Length, OnReceivedData, tcpClient);
-
-
-                Vector2 input = new Vector2(0.5f, 0.1f);
-                Vector2List vectorLst = new Vector2List();
-                vectorLst.data.Add(input);
-                vectorLst.data.Add(input);
-
-                JsonWrapData data = new JsonWrapData() { protocolName = "moveInput" };
-                data.jsonData = JsonUtility.ToJson(vectorLst);
-                Debug.Log(data.jsonData);
-                SendData(JsonUtility.ToJson(data));
             }
-
-
-            
         }
 
         public void OnUpdate(float deltaTime)
         {
+            int handleCount = 0;
+            for(int i = 0; ;)
+            {
+                if (message.Count == 0 || handleCount >= 50)
+                    break;
+
+                var msg = message[i];
+                // --todo  未处理粘包
+                message.RemoveAt(0);
+                HandleMsg(msg);
+                
+                handleCount++;
+            }
+            
+
             foreach (var m in _managerList)
                 m.OnUpdate(deltaTime);
         }
@@ -90,22 +91,35 @@ namespace MobaClient
             byte[] newBuffer = new byte[size];
             Buffer.BlockCopy(buffer, 0, newBuffer, 0, size);
 
+            message.Add(System.Text.Encoding.Default.GetString( newBuffer ));
+
             stream.BeginRead(buffer, 0, buffer.Length, OnReceivedData, tcpClient);
         }
 
-        public void SendData(string jsonData)
+        List<string> message = new List<string>();
+
+        void HandleMsg(string buffer)
         {
-            byte[] bArray = System.Text.Encoding.Default.GetBytes(jsonData);
+            var wrapData = JsonUtility.FromJson<JsonWrapData>(buffer);
+            if (wrapData.protocolName == "status")
+            {
+                var data = JsonUtility.FromJson<Vector2>(wrapData.jsonData);
+                GameObject.FindObjectOfType<SvrMoveController>().UpdateStatus(data.x, data.y);
+            }
+        }
+
+        public void SendData(string protocol, object toSendData)
+        {
+            JsonWrapData data = new JsonWrapData() { protocolName = protocol };
+            data.jsonData = JsonUtility.ToJson(toSendData);
+
+            byte[] bArray = System.Text.Encoding.Default.GetBytes(JsonUtility.ToJson( data));
             stream.Write(bArray, 0, bArray.Length);
         }
 
         
     }
 
-    public class Vector2List
-    {
-        public List<Vector2> data = new List<Vector2>();
-    }
 
 
     public class JsonWrapData

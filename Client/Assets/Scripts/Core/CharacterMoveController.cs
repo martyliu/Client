@@ -17,22 +17,39 @@ namespace MobaClient
 
         }
 
-        
+        private void Update()
+        {
+            SendCharacterStatus();
+            
+        }
+
+        void SendCharacterStatus()
+        {
+            Vector2 pos = new Vector2(transform.position.x, transform.position.z);
+            StartCoroutine(SendDataCor(pos));
+        }
+
+        public float delay = 100.0f;
+        public float randomValue = 15.0f;
+        IEnumerator SendDataCor(Vector2 pos)
+        {
+            var dd = Random.Range(delay - randomValue, delay + randomValue);
+            yield return new WaitForSeconds( dd / 1000.0f);
+            GameApp.Instance.SendData("status", pos);
+        }
+
         void FixedUpdate()
         {
             float x;
             float y;
             GameApp.Instance.InputManager.GetInputData(out x, out y);
-
-            _rigidBody.velocity = new Vector3(x * Time.fixedDeltaTime * speed , _rigidBody.velocity.y, y * Time.fixedDeltaTime * speed);
-            //Debug.Log(x + ", " + y);
-            //Debug.Log("x: " + x + ", Y: " + y);
-            //if(x != 0 || y != 0)
+            if (x == 0 && y == 0)
             {
-                //_rigidBody.velocity = new Vector3(x * speed * Time.fixedDeltaTime, _rigidBody.velocity.y, y * speed * Time.fixedDeltaTime);
+                Debug.Log(_rigidBody.velocity);
+                return;
             }
-
-            //Debug.Log(_rigidBody.velocity);
+                
+            _rigidBody.velocity = new Vector3(x * Time.fixedDeltaTime * speed , _rigidBody.velocity.y, y * Time.fixedDeltaTime * speed);
         }
 
         private void LateUpdate()
